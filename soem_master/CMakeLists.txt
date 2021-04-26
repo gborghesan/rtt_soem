@@ -1,15 +1,23 @@
-cmake_minimum_required(VERSION 2.4.6)
+cmake_minimum_required(VERSION 3.5)
 
 project(soem_master)
 
-# Set the CMAKE_PREFIX_PATH in case you're not using Orocos through
-# ROS for helping these find commands find RTT.
-find_package(OROCOS-RTT REQUIRED ${RTT_HINTS} )
-find_package(catkin QUIET)
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rtt_ros2 REQUIRED)
+find_package(rtt_ros2_params REQUIRED)
+find_package(rtt_ros2_node REQUIRED) # Required ?
+find_package(rtt_ros2_std_msgs REQUIRED)
+
+
+
+orocos_use_package(ocl-deployment REQUIRED)
+orocos_use_package(ocl-taskbrowser REQUIRED)
+
 
 # Defines the orocos_* cmake macros. See that file for additional
 # documentation.
-include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake)
 
 find_package(soem REQUIRED)
 include_directories(${soem_INCLUDE_DIRS})
@@ -25,5 +33,12 @@ orocos_install_headers( soem_driver.h soem_driver_factory.h)
 
 install(PROGRAMS setcap.sh DESTINATION lib/${PROJECT_NAME})
 
-orocos_generate_package( INCLUDE_DIRS ..)
+ament_package()
+
+orocos_generate_package( 
+ 	INCLUDE_DIRS ..
+  DEPENDS_TARGETS
+    rtt_ros2
+    rtt_ros2_std_msgs
+)
 

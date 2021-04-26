@@ -1,4 +1,6 @@
-<package>
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>soem_master</name>
   <version>0.1.1</version>
   <description>
@@ -14,11 +16,14 @@
 
   <author>Ruben Smits</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>rtt_ros2</depend>
+  <depend>rtt_ros2_params</depend>
+  <depend>rtt_ros2_std_msgs</depend>
+  <depend>soem</depend>
 
-  <build_depend>rtt</build_depend>
-  <build_depend>soem</build_depend>
-  <run_depend>rtt</run_depend>
-  <run_depend>soem</run_depend>
-
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
