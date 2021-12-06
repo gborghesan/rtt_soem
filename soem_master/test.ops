@@ -1,0 +1,10 @@
+
+import("rtt_ros2")
+
+ros.import("soem_master")
+
+loadComponent("master","soem_master::SoemMasterComponent")
+
+master.setPeriod(0.01)
+master.configure()
+master.start()
