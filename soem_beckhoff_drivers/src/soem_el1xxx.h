@@ -30,11 +30,14 @@
 #define SOEM_EL1xxx_H
 
 #include <soem_master/soem_driver.h>
-#include <soem_beckhoff_drivers/DigitalMsg.h>
+#include <soem_beckhoff_drivers_msgs/typekit/Types.hpp>
 #include <rtt/Port.hpp>
 #include <bitset>
 
+
+using namespace soem_beckhoff_drivers_msgs::msg;
 namespace soem_beckhoff_drivers{
+
 
   class SoemEL1xxx : public soem_master::SoemDriver
   {

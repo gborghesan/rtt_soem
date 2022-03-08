@@ -2,9 +2,10 @@
 import("rtt_ros2")
 
 ros.import("soem_master")
+ros.import("soem_beckhoff_drivers")
 
 loadComponent("master","soem_master::SoemMasterComponent")
 
 master.setPeriod(0.01)
-master.configure()
-master.start()
+//master.configure()
+//master.start()

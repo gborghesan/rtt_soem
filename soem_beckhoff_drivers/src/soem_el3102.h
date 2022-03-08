@@ -29,7 +29,7 @@
 #define SOEM_EL3102_H
 
 #include <soem_master/soem_driver.h>
-#include <soem_beckhoff_drivers/AnalogMsg.h>
+#include <soem_beckhoff_drivers_msgs/typekit/Types.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Property.hpp>
 #include <vector>
@@ -46,7 +46,7 @@
 #define SIGN					0x8000
 
 using namespace RTT;
-
+using namespace soem_beckhoff_drivers_msgs::msg;
 namespace soem_beckhoff_drivers {
 
 typedef struct PACKED {

@@ -20,7 +20,7 @@ orocos_use_package(ocl-taskbrowser REQUIRED)
 # documentation.
 
 find_package(soem REQUIRED)
-include_directories(${soem_INCLUDE_DIRS})
+include_directories(include ${soem_INCLUDE_DIRS})
 
 #common commands for building c++ executables and libraries
 orocos_library(soem_driver_factory soem_driver_factory.cpp)
@@ -29,9 +29,17 @@ target_link_libraries(soem_master soem_driver_factory ${soem_LIBRARIES})
 
 orocos_plugin(soem_plugin soem_plugin.cpp)
 
-orocos_install_headers( soem_driver.h soem_driver_factory.h)
+orocos_install_headers( include/soem_master/soem_driver.h include/soem_master/soem_driver_factory.h)
 
 install(PROGRAMS setcap.sh DESTINATION lib/${PROJECT_NAME})
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+ament_export_include_directories(include)
+ament_export_libraries(soem_driver_factory)
+
 
 ament_package()
 
