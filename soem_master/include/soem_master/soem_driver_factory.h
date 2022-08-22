@@ -1,7 +1,7 @@
 /***************************************************************************
- tag: Ruben Smits  Tue Nov 16 09:30:46 CET 2010  soem_el5101.h
+ tag: Ruben Smits  Tue Nov 16 09:26:15 CET 2010  soem_driver_factory.cpp
 
- soem_el5101.h -  description
+ soem_driver_factory.h -  description
  -------------------
  begin                : Tue November 16 2010
  copyright            : (C) 2010 Ruben Smits
@@ -25,71 +25,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef SOEM_EL5101_H
-#define SOEM_EL5101_H
+#ifndef SOEM_DRIVER_FACTORY_H
+#define SOEM_DRIVER_FACTORY_H
 
-#include <soem_master/soem_driver.h>
-#include <soem_beckhoff_drivers_msgs/typekit/Types.hpp>
-#include <rtt/Port.hpp>
-#include <rtt/Property.hpp>
-#include <bitset>
-#include <vector>
-using namespace soem_beckhoff_drivers_msgs::msg;
-namespace soem_beckhoff_drivers
+#include <map>
+#include <string>
+#include "soem_driver.h"
+
+namespace soem_master
 {
 
-class SoemEL5101: public soem_master::SoemDriver
+class SoemDriverFactory
 {
-
-    typedef struct PACKED
+public:
+    static SoemDriverFactory& Instance()
     {
-      uint8 control;
-      uint16 outvalue;
-    } out_el5101t;
+        static SoemDriverFactory soem_driver_factory;
+        return soem_driver_factory;
+    }
 
-    typedef struct PACKED
-    {
-      uint8 status;
-      uint16 invalue;
-      uint16 latch;
-      uint32 frequency;
-      uint16 period;
-      uint16 window;
-    } in_el5101t;
+    typedef SoemDriver* (*CreateDriverCallBack)(ec_slavet*);
 
- public:
-    SoemEL5101(ec_slavet* mem_loc);
-    ~SoemEL5101()
-      {
-      }
-    ;
-  // Returns the encoder value as a double.    
-    uint32_t read(void);
+    bool registerDriver(std::string name, CreateDriverCallBack createFn);
 
-    /*double read_out(void);
-      int write_out(uint);
-      unsigned int control(void);
-      unsigned int status(void);*/
-
-    virtual void update();
+    SoemDriver* createDriver(ec_slavet* mem_loc);
+    void displayAvailableDrivers();
 
 private:
+    typedef std::map<std::string, CreateDriverCallBack> FactoryMap;
+    FactoryMap m_factory_map;
 
-  typedef struct {
-    uint16 index;
-    uint8 subindex;
-    uint8 size;
-    int param;
-    std::string name;
-    std::string description;
-  } parameter;
-  
-  EncoderMsg msg_;
-  std::vector<double> values_in_;
-  RTT::OutputPort<EncoderMsg> values_port_;
-  RTT::Property<std::string> propriete;
-  std::vector<parameter> params;
+    SoemDriverFactory()
+    {
+    }
+    ;
+    SoemDriverFactory(const SoemDriverFactory&);
+    SoemDriverFactory& operator=(const SoemDriverFactory&);
+    ~SoemDriverFactory()
+    {
+    }
+    ;
 };
-  
 }
 #endif

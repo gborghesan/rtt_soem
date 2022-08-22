@@ -31,7 +31,7 @@ extern "C"
 
 #include <cstdio>
 
-#include "soem_driver_factory.h"
+#include "soem_master/soem_driver_factory.h"
 #include "soem_master_component.h"
 
 #include "rtt/Component.hpp"

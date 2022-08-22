@@ -29,7 +29,7 @@
 #define SOEM_EL6022_H
 
 #include <soem_master/soem_driver.h>
-#include <soem_beckhoff_drivers/CommMsgBig.h>
+#include <soem_beckhoff_drivers_msgs/typekit/Types.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Property.hpp>
 #include <vector>
@@ -116,6 +116,7 @@ typedef struct PACKED {
 } in_el6022t;
 
 using namespace RTT;
+using namespace soem_beckhoff_drivers_msgs::msg;
 namespace soem_beckhoff_drivers {
 
 class SoemEL6022 : public soem_master::SoemDriver
