@@ -265,6 +265,7 @@ void SoemMasterComponent::cleanupHook()
     this->provides()->removeService(m_drivers[i]->provides()->getName());
     delete m_drivers[i];
   }
+    m_drivers.clear();
 
     //stop SOEM, close socket
     ec_close();
