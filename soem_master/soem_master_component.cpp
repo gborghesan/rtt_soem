@@ -252,7 +252,12 @@ void SoemMasterComponent::updateHook()
     if (ec_receive_processdata(EC_TIMEOUTRET) == 0)
     {
         success = false;
-        log(Warning) << "receiving data failed" << endlog();
+        log(Warning) << "receiving data failed. Restarting Master..." << endlog();
+        
+        //Restart Master
+        ec_close(); //stop SOEM, close socket
+        configureHook();
+        startHook();
     }
 
     if (success)
