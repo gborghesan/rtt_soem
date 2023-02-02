@@ -94,28 +94,41 @@ bool SoemMasterComponent::configureHook()
             // wait for all slaves to reach PRE_OP state
             ec_statecheck(0, EC_STATE_PRE_OP, EC_TIMEOUTSTATE);
 
-            for (int i = 1; i <= ec_slavecount; i++)
+            if(m_drivers.empty())
             {
-                SoemDriver
-                        * driver = SoemDriverFactory::Instance().createDriver(
-                                &ec_slave[i]);
-                if (driver)
+                //Create & configure drivers
+                for (int i = 1; i <= ec_slavecount; i++)
                 {
-                    m_drivers.push_back(driver);
-                    log(Info) << "Created driver for " << ec_slave[i].name
-                            << ", with address " << ec_slave[i].configadr
-                            << endlog();
-                    //Adding driver's services to master component
-                    this->provides()->addService(driver->provides());
-                    log(Info) << "Put configured parameters in the slaves."
-                            << endlog();
-                    if (!driver->configure())
-                        return false;
+                    SoemDriver
+                            * driver = SoemDriverFactory::Instance().createDriver(
+                                    &ec_slave[i]);
+                    if (driver)
+                    {
+                        m_drivers.push_back(driver);
+                        log(Info) << "Created driver for " << ec_slave[i].name
+                                << ", with address " << ec_slave[i].configadr
+                                << endlog();
+                        //Adding driver's services to master component
+                        this->provides()->addService(driver->provides());
+                        log(Info) << "Put configured parameters in the slaves."
+                                << endlog();
+                        if (!driver->configure())
+                            return false;
+                    }
+                    else
+                    {
+                        log(Warning) << "Could not create driver for "
+                                << ec_slave[i].name << endlog();
+                    }
                 }
-                else
+            }
+            else
+            {
+                //Configure drivers
+                for (unsigned int i = 0; i < m_drivers.size(); i++)
                 {
-                    log(Warning) << "Could not create driver for "
-                            << ec_slave[i].name << endlog();
+                    if (!m_drivers[i]->configure())
+                        return false;
                 }
             }
 
@@ -239,7 +252,12 @@ void SoemMasterComponent::updateHook()
     if (ec_receive_processdata(EC_TIMEOUTRET) == 0)
     {
         success = false;
-        log(Warning) << "receiving data failed" << endlog();
+        log(Warning) << "receiving data failed. Restarting Master..." << endlog();
+        
+        //Restart Master
+        ec_close(); //stop SOEM, close socket
+        configureHook();
+        startHook();
     }
 
     if (success)
@@ -265,6 +283,7 @@ void SoemMasterComponent::cleanupHook()
     this->provides()->removeService(m_drivers[i]->provides()->getName());
     delete m_drivers[i];
   }
+    m_drivers.clear();
 
     //stop SOEM, close socket
     ec_close();
